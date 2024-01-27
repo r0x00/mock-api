@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "5a44d8cc-d44f-48f0-a5b4-1fa37bf494d3",
+		"name": "Mock-Api",
+		"description": "An API that mock some response",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20863727"
+	},
+	"item": [
+		{
+			"name": "Timer",
+			"item": [
+				{
+					"name": "Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/timer/name",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"name"
+							]
+						},
+						"description": "**return** a name **(bob, master, sheng fui)** (change ever **30 seconds**)"
+					},
+					"response": []
+				},
+				{
+					"name": "Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/timer/number",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"number"
+							]
+						},
+						"description": "return a **number** between **1 at 6** (change ever **15 seconds**)"
+					},
+					"response": []
+				},
+				{
+					"name": "Empty",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/timer/empty",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"empty"
+							]
+						},
+						"description": "return a **{}** or **{ data: {'Hola:)'} }** (change ever **60 seconds**)"
+					},
+					"response": []
+				},
+				{
+					"name": "Boolean",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/timer/boolean",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"boolean"
+							]
+						},
+						"description": "return a **boolean** (change ever **45 seconds**)"
+					},
+					"response": []
+				},
+				{
+					"name": "Load",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.responseSize <= 0) return;",
+									"const keys =  Object.keys(pm.response.json());",
+									"",
+									"pm.collectionVariables.set(\"timer_id\", keys[0]);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/timer/generate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/timer/generate/{{timer_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"generate",
+								"{{timer_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"timer_id\", pm.response.json().id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "JSON",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"teste\",\n    \"duration\": 10000,\n    \"random\": [\"teste\", \"oie\", \":)\"]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/timer/generate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "JSON",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"{{timer_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/timer/generate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"timer",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "generate_id",
+			"value": ""
+		},
+		{
+			"key": "timer_id",
+			"value": ""
+		}
+	]
+}

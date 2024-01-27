@@ -1,10 +1,7 @@
-var express = require('express');
-var router = express.Router();
-
 const data = {};
 
-// Return a number between 1 at 6 (change ever 15 seconds)
-router.get('/number', function(req, res, next) {
+// Return a number between 1 at 6 (change ever 15 seconds);
+exports.number = (req, res, next) => {
     if(data.number) {
         console.log("/api/number result: " + data.number.result);
         console.log(" ");
@@ -25,11 +22,11 @@ router.get('/number', function(req, res, next) {
     console.log("/api/number result: " + data.number.result);
     console.log(" ");
     res.send({ count: data.number.result });
-});
+};
 
 
-// Return a name (bob, master, sheng fui) (change ever 30 seconds)
-router.get('/name', function(req, res, next) {
+// Return a name (bob, master, sheng fui) (change ever 30 seconds);
+exports.name = (req, res, next) => {
     if(data.name) {
         console.log("/api/name result: " + data.name.result);
         console.log(" ");
@@ -50,11 +47,11 @@ router.get('/name', function(req, res, next) {
     console.log("/api/name result: " + data.name.result);
     console.log(" ");
     res.send( data.name.result );
-});
+};
 
 
-// Return a {}  or { data: {'Hola:)'}} (change ever 60 seconds)
-router.get('/empty', function(req, res, next) {
+// Return a {}  or { data: {'Hola:)'}} (change ever 60 seconds);
+exports.empty = (req, res, next) => {
     if(data.empty) {
         console.log("/api/empty result: " + data.empty.result);
         console.log(" ");
@@ -75,11 +72,12 @@ router.get('/empty', function(req, res, next) {
     console.log("/api/empty result: " + data.empty.result);
     console.log(" ");
     res.send(data.empty.result);
-});
+};
 
 
-// Return a boolean (change ever 45 seconds)
-router.get('/boolean', function(req, res, next) {
+
+// Return a boolean (change ever 45 seconds);
+exports.boolean = (req, res, next) => {
     if(data.boolean) {
         console.log("/api/boolean result: " + data.boolean.result);
         console.log(" ");
@@ -98,12 +96,72 @@ router.get('/boolean', function(req, res, next) {
     console.log("/api/boolean result: " + data.boolean.result);
     console.log(" ");
     res.send({ bool: data.boolean.result });
-});
+};
+
+
+
+exports.load =  (req, res, next) => {
+    console.log(data.generate)
+    res.send(data.generate);
+};
+
+
+exports.show = (req, res, next) => {
+    const { id } = req.params;
+
+    if(!data.generate) return res.send("No methods add yet");
+
+    if(!id) return res.status(400).send({err: "Please add the necessary data"});
+
+    const method = data.generate[id];
+
+    if(!method) return res.status(400).send({err: "The method was not found"});
+
+    res.send( method );
+};
+
+
+exports.create = (req, res, next) => {
+    if(!data.generate) data.generate = {};
+
+    const { name, random, duration } = req.body;
+
+
+    if(!name || !random || (!duration && typeof duration != 'number')) return res.status(400).send({err: "Please add the necessary data"});
+
+    let newName = name + Math.random().toString(28);
+
+
+    data.generate[newName] = {};
+
+    data.generate[newName].fn = () => {
+        const r = random;
+
+        data.generate[newName].result = r[randomN(r)];
+
+        setTimeout(() =>  data.generate[newName].fn(), duration);
+    };
+
+    data.generate[newName].fn()
+
+    res.send({msg: "Access the api by: /api/generate/" + newName, id: newName});
+};
+
+
+exports.delete = (req, res, next) => {
+    const values = req.body;
+
+    if(!data.generate) return res.send("No methods add yet");
+
+    if(!values || !values.id) return res.status(400).send({err: "Please add the necessary data"});
+
+    delete data.generate[values.id];
+
+    res.send();
+};
 
 
 const randomN = (value) => {
     const number = Math.floor(Math.random() * (value.length));
     return number;
-}
-
-module.exports = router;
+};

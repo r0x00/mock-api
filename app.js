@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const routesViews = require('./routes/routes-views')
+const routesViews = require('./routes/routes-restful')
 
 var app = express();
 
@@ -14,7 +14,7 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -39,13 +39,6 @@ app.use(function(err, req, res, next) {
 app.listen(5000, (err) => {
   if(err) return console.log('An err ocorrued when opening port 5000')
   console.log('Listening the app on port 5000')
-  console.log(' ');
-  console.log('= /api/name: return a name (bob, master, sheng fui) (change ever 30 seconds)');
-  console.log("= /api/empty: return a {}  or { data: {'Hola:)'}} (change ever 60 seconds)");
-  console.log('= /api/number: return a number between 1 at 6 (change ever 15 seconds)');
-  console.log('= /api/boolean: return a boolean (change ever 45 seconds)');
-  console.log(' ');
-
 })
 
 module.exports = app;
